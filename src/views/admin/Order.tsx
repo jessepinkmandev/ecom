@@ -31,7 +31,7 @@ const Order = () => {
         <div className="relative mt-5 overflow-x-auto">
           <div className="w-full text-sm text-left ">
             <div className="text-sm text-white uppercase border-b border-slate-700">
-              <div className="flex justify-between items-center">
+              <div className="flex justify-between items-center md:text-sm text-xs">
                 <div className="py-3 w-[25%] font-bold">Order Id</div>
                 <div className="py-3 w-[13%] font-bold">Price</div>
                 <div className="py-3 w-[18%] font-bold">Payment Status</div>
@@ -44,196 +44,27 @@ const Order = () => {
             </div>
 
             {/* // */}
-            <div className=" text-white ">
-              <div className="flex justify-between items-start border-b border-slate-700">
-                <div className="py-3 w-[25%] font-medium whitespace-nowrap">
-                  #5465{" "}
-                </div>
-                <div className="py-3 w-[13%] font-medium">$243</div>
-                <div className="py-3 w-[18%] font-medium"> Pending</div>
-                <div className="py-3 w-[18%] font-medium"> Pending</div>
-                <div className="py-3 w-[18%] font-medium">
-                  <Link>View</Link>
-                </div>
-                <div
-                  onClick={() => setShow(!show)}
-                  className="py-3 w-[8%] font-medium hover:cursor-pointer"
-                >
-                  <LuArrowDownSquare />
-                </div>
-              </div>
-            </div>
-
-            {/* // */}
-            <div
-              className={
-                show
-                  ? "block text-white border-slate-700 bg-slate-500"
-                  : "hidden"
-              }
-            >
-              <div className="flex justify-start items-start border-b border-slate-700">
-                <div className="py-3 w-[25%] font-medium whitespace-nowrap">
-                  #5465{" "}
-                </div>
-                <div className="py-3 w-[13%] font-medium">$243</div>
-                <div className="py-3 w-[18%] font-medium"> Pending</div>
-                <div className="py-3 w-[18%] font-medium"> Pending</div>
-              </div>
-              {/* // */}
-              <div className="flex justify-start items-start border-b border-slate-700">
-                <div className="py-3 w-[25%] font-medium whitespace-nowrap">
-                  #5465{" "}
-                </div>
-                <div className="py-3 w-[13%] font-medium">$243</div>
-                <div className="py-3 w-[18%] font-medium"> Pending</div>
-                <div className="py-3 w-[18%] font-medium"> Pending</div>
-              </div>
-            </div>
-            {/* hello */}
-
-            <div className=" text-white ">
-              <div className="flex justify-between items-start border-b border-slate-700">
-                <div className="py-3 w-[25%] font-medium whitespace-nowrap">
-                  #5465{" "}
-                </div>
-                <div className="py-3 w-[13%] font-medium">$243</div>
-                <div className="py-3 w-[18%] font-medium"> Pending</div>
-                <div className="py-3 w-[18%] font-medium"> Pending</div>
-                <div className="py-3 w-[18%] font-medium">
-                  <Link>View</Link>
-                </div>
-                <div
-                  onClick={() => setShow(!show)}
-                  className="py-3 w-[8%] font-medium hover:cursor-pointer"
-                >
-                  <LuArrowDownSquare />
+            {[1, 2, 3, 4, 5].map((a) => (
+              <div key={a} className=" text-white ">
+                <div className="flex justify-between items-start border-b  border-slate-700">
+                  <div className="py-3 w-[25%] font-medium whitespace-nowrap">
+                    #5465{" "}
+                  </div>
+                  <div className="py-3 w-[13%] font-medium">$243</div>
+                  <div className="py-3 w-[18%] font-medium"> Pending</div>
+                  <div className="py-3 w-[18%] font-medium"> Pending</div>
+                  <div className="py-3 w-[18%] font-medium">
+                    <Link to="/admin/dashboard/order/details/3">View</Link>
+                  </div>
+                  <div
+                    onClick={() => setShow(!show)}
+                    className="py-3 w-[8%] font-medium hover:cursor-pointer"
+                  >
+                    <LuArrowDownSquare />
+                  </div>
                 </div>
               </div>
-            </div>
-
-            {/* // */}
-            <div
-              className={
-                show
-                  ? "block text-white border-slate-700 bg-slate-500"
-                  : "hidden"
-              }
-            >
-              <div className="flex justify-start items-start border-b border-slate-700">
-                <div className="py-3 w-[25%] font-medium whitespace-nowrap">
-                  #5465{" "}
-                </div>
-                <div className="py-3 w-[13%] font-medium">$243</div>
-                <div className="py-3 w-[18%] font-medium"> Pending</div>
-                <div className="py-3 w-[18%] font-medium"> Pending</div>
-              </div>
-              {/* // */}
-              <div className="flex justify-start items-start border-b border-slate-700">
-                <div className="py-3 w-[25%] font-medium whitespace-nowrap">
-                  #5465{" "}
-                </div>
-                <div className="py-3 w-[13%] font-medium">$243</div>
-                <div className="py-3 w-[18%] font-medium"> Pending</div>
-                <div className="py-3 w-[18%] font-medium"> Pending</div>
-              </div>
-            </div>
-            {/* hello */}
-
-            <div className=" text-white ">
-              <div className="flex justify-between items-start border-b border-slate-700">
-                <div className="py-3 w-[25%] font-medium whitespace-nowrap">
-                  #5465{" "}
-                </div>
-                <div className="py-3 w-[13%] font-medium">$243</div>
-                <div className="py-3 w-[18%] font-medium"> Pending</div>
-                <div className="py-3 w-[18%] font-medium"> Pending</div>
-                <div className="py-3 w-[18%] font-medium">
-                  <Link>View</Link>
-                </div>
-                <div
-                  onClick={() => setShow(!show)}
-                  className="py-3 w-[8%] font-medium hover:cursor-pointer"
-                >
-                  <LuArrowDownSquare />
-                </div>
-              </div>
-            </div>
-
-            {/* // */}
-            <div
-              className={
-                show
-                  ? "block text-white border-slate-700 bg-slate-500"
-                  : "hidden"
-              }
-            >
-              <div className="flex justify-start items-start border-b border-slate-700">
-                <div className="py-3 w-[25%] font-medium whitespace-nowrap">
-                  #5465{" "}
-                </div>
-                <div className="py-3 w-[13%] font-medium">$243</div>
-                <div className="py-3 w-[18%] font-medium"> Pending</div>
-                <div className="py-3 w-[18%] font-medium"> Pending</div>
-              </div>
-              {/* // */}
-              <div className="flex justify-start items-start border-b border-slate-700">
-                <div className="py-3 w-[25%] font-medium whitespace-nowrap">
-                  #5465{" "}
-                </div>
-                <div className="py-3 w-[13%] font-medium">$243</div>
-                <div className="py-3 w-[18%] font-medium"> Pending</div>
-                <div className="py-3 w-[18%] font-medium"> Pending</div>
-              </div>
-            </div>
-            {/* hello */}
-
-            <div className=" text-white ">
-              <div className="flex justify-between items-start border-b border-slate-700">
-                <div className="py-3 w-[25%] font-medium whitespace-nowrap">
-                  #5465{" "}
-                </div>
-                <div className="py-3 w-[13%] font-medium">$243</div>
-                <div className="py-3 w-[18%] font-medium"> Pending</div>
-                <div className="py-3 w-[18%] font-medium"> Pending</div>
-                <div className="py-3 w-[18%] font-medium">
-                  <Link>View</Link>
-                </div>
-                <div
-                  onClick={() => setShow(!show)}
-                  className="py-3 w-[8%] font-medium hover:cursor-pointer"
-                >
-                  <LuArrowDownSquare />
-                </div>
-              </div>
-            </div>
-
-            {/* // */}
-            <div
-              className={
-                show
-                  ? "block text-white border-slate-700 bg-slate-500"
-                  : "hidden"
-              }
-            >
-              <div className="flex justify-start items-start border-b border-slate-700">
-                <div className="py-3 w-[25%] font-medium whitespace-nowrap">
-                  #5465{" "}
-                </div>
-                <div className="py-3 w-[13%] font-medium">$243</div>
-                <div className="py-3 w-[18%] font-medium"> Pending</div>
-                <div className="py-3 w-[18%] font-medium"> Pending</div>
-              </div>
-              {/* // */}
-              <div className="flex justify-start items-start border-b border-slate-700">
-                <div className="py-3 w-[25%] font-medium whitespace-nowrap">
-                  #5465{" "}
-                </div>
-                <div className="py-3 w-[13%] font-medium">$243</div>
-                <div className="py-3 w-[18%] font-medium"> Pending</div>
-                <div className="py-3 w-[18%] font-medium"> Pending</div>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
 
