@@ -1,8 +1,12 @@
 import { Link } from "react-router-dom";
 import { FaFacebook, FaGoogle } from "react-icons/fa";
 import { useState } from "react";
+import { useSelector } from "react-redux";
+import { PropagateLoader } from "react-spinners";
 
 const Register = () => {
+  const { loader } = useSelector((state) => state.auth);
+
   const [input, setInput] = useState({
     name: "",
     email: "",
@@ -85,11 +89,18 @@ const Register = () => {
               <label htmlFor="checkbox">I Agree To Privacy Policy</label>
             </div>
 
-            <button className=" bg-slate-800 w-full hover:shadow-blue-300 hover:shadow-lg text-white rounded-md px-7 py-2 mb-3 ">
-              Sign Up
+            <button
+              disabled={loader ? true : false}
+              className=" bg-slate-800 w-full hover:shadow-blue-300 hover:shadow-lg text-white rounded-md px-7 py-2 mb-3 "
+            >
+              {loader ? (
+                <PropagateLoader className="h-4" color="#fff" />
+              ) : (
+                "Sign Up"
+              )}
             </button>
           </form>
-          <div className=" text-center ">Or</div>
+          <div className=" text-center border-b-2 border-dashed  ">Or</div>
 
           <div className="mt-4 flex gap-3">
             <div className="flex justify-center items-center w-[50%] bg-orange-500 hover:cursor-pointer rounded-md py-3 ">

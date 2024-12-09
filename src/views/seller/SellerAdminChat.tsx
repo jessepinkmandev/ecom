@@ -1,24 +1,21 @@
 const SellerAdminChat = () => {
-  const sellerID = 65;
   return (
     <div className="px-2 lg:px-7 py-5">
       <div className="w-full bg-slate-500 px=4 py-4 rounded-md h-[calc(1100vh-140px)]  ">
         <div className="flex w-full h-full relative">
           <div className="w-full md:pl-4 ml-4 ">
             <div className="flex justify-between items-center">
-              {sellerID && (
-                <div className="flex justify-start items-center gap-3">
-                  <div className="relative">
-                    <img
-                      className="w-12 h-12 border-green-500 border-2 rounded-full max-w-12 p-1"
-                      src="https://picsum.photos/200/300/?blur"
-                      alt=""
-                    />
-                    <div className="w-3 h-3 bg-green-500 rounded-full absolute right-0 bottom-0"></div>
-                  </div>
-                  <h2 className="text-base text-white font-semibold">Jesse</h2>
+              <div className="flex justify-start items-center gap-3">
+                <div className="relative">
+                  <img
+                    className="w-12 h-12 border-green-500 border-2 rounded-full max-w-12 p-1"
+                    src="https://picsum.photos/200/300/?blur"
+                    alt=""
+                  />
+                  <div className="w-3 h-3 bg-green-500 rounded-full absolute right-0 bottom-0"></div>
                 </div>
-              )}
+                <h2 className="text-base text-white font-semibold">Support</h2>
+              </div>
             </div>
             <div className="py-4 ">
               <div className="bg-slate-400 h-[calc(100vh-290px)] rounded-md p-3 overflow-y-auto">
