@@ -1,11 +1,21 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FaFacebook, FaGoogle } from "react-icons/fa";
-import { useState } from "react";
-import { useSelector } from "react-redux";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { PropagateLoader } from "react-spinners";
+import {
+  messageClear,
+  seller_register,
+} from "../../store/Reducers/authReducer";
+import toast from "react-hot-toast";
 
 const Register = () => {
-  const { loader } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const { loader, successMessage, errorMessage } = useSelector(
+    (state) => state.auth
+  );
 
   const [input, setInput] = useState({
     name: "",
@@ -22,8 +32,20 @@ const Register = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(input);
+    dispatch(seller_register(input));
   };
+
+  useEffect(() => {
+    if (errorMessage) {
+      toast.error(errorMessage);
+      dispatch(messageClear());
+    }
+    if (successMessage) {
+      toast.success(successMessage);
+      dispatch(messageClear());
+      navigate("/");
+    }
+  }, [successMessage, errorMessage]);
 
   return (
     <div className="min-w-screen min-h-screen bg-[#FFAD60] flex justify-center items-center ">
@@ -94,7 +116,7 @@ const Register = () => {
               className=" bg-slate-800 w-full hover:shadow-blue-300 hover:shadow-lg text-white rounded-md px-7 py-2 mb-3 "
             >
               {loader ? (
-                <PropagateLoader className="h-4" color="#fff" />
+                <PropagateLoader className="h-4  mr-3" color="#fff" />
               ) : (
                 "Sign Up"
               )}

@@ -1,7 +1,17 @@
 import { AiFillDashboard, AiOutlineShoppingCart } from "react-icons/ai";
 import { BiCategory, BiChat } from "react-icons/bi";
+import { BsCartCheck, BsFillChatQuoteFill } from "react-icons/bs";
+import { CgProfile } from "react-icons/cg";
 import { FaUser, FaUserTimes } from "react-icons/fa";
-import { MdPayment, MdRequestPage, MdRequestQuote } from "react-icons/md";
+import { IoMdAdd } from "react-icons/io";
+import { IoChatbubbles } from "react-icons/io5";
+import {
+  MdPayment,
+  MdRequestPage,
+  MdRequestQuote,
+  MdViewList,
+} from "react-icons/md";
+import { TbBasketDiscount } from "react-icons/tb";
 
 export const allNav = [
   {
@@ -70,56 +80,56 @@ export const allNav = [
   {
     id: 10,
     title: "Add Product",
-    icon: <AiFillDashboard />,
+    icon: <IoMdAdd />,
     role: "seller",
     path: "/seller/dashboard/add-product",
   },
   {
     id: 11,
     title: "All Product",
-    icon: <AiFillDashboard />,
+    icon: <MdViewList />,
     role: "seller",
     path: "/seller/dashboard/all-product",
   },
   {
     id: 12,
     title: "Discount Product",
-    icon: <AiFillDashboard />,
+    icon: <TbBasketDiscount />,
     role: "seller",
     path: "/seller/dashboard/discount-product",
   },
   {
     id: 13,
     title: "Orders",
-    icon: <AiFillDashboard />,
+    icon: <BsCartCheck />,
     role: "seller",
     path: "/seller/dashboard/orders",
   },
   {
     id: 14,
     title: "Payments",
-    icon: <AiFillDashboard />,
+    icon: <MdPayment />,
     role: "seller",
     path: "/seller/dashboard/payment",
   },
   {
     id: 15,
     title: "Chat Customer",
-    icon: <AiFillDashboard />,
+    icon: <IoChatbubbles />,
     role: "seller",
     path: "/seller/dashboard/chat-customer",
   },
   {
     id: 16,
     title: "Chat Support",
-    icon: <AiFillDashboard />,
+    icon: <BsFillChatQuoteFill />,
     role: "seller",
     path: "/seller/dashboard/chat-support",
   },
   {
     id: 17,
     title: "Profile",
-    icon: <AiFillDashboard />,
+    icon: <CgProfile />,
     role: "seller",
     path: "/seller/dashboard/profile",
   },

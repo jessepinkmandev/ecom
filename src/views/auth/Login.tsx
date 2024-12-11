@@ -1,8 +1,18 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FaFacebook, FaGoogle } from "react-icons/fa";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { PropagateLoader } from "react-spinners";
+import { useDispatch, useSelector } from "react-redux";
+import { messageClear, seller_login } from "../../store/Reducers/authReducer";
+import toast from "react-hot-toast";
 
 const Login = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { loader, errorMessage, successMessage } = useSelector(
+    (state) => state.auth
+  );
+
   const [input, setInput] = useState({
     email: "",
     password: "",
@@ -17,8 +27,20 @@ const Login = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(input);
+    dispatch(seller_login(input));
   };
+
+  useEffect(() => {
+    if (errorMessage) {
+      toast.error(errorMessage);
+      dispatch(messageClear());
+    }
+    if (successMessage) {
+      toast.success(successMessage);
+      dispatch(messageClear());
+      navigate("/");
+    }
+  }, [successMessage, errorMessage]);
   return (
     <div className="min-w-screen min-h-screen bg-[#FFAD60] flex justify-center items-center ">
       <div className="w-[350px] text-[#fff] p-2">
@@ -60,8 +82,15 @@ const Login = () => {
               />
             </div>
 
-            <button className=" bg-slate-800 w-full hover:shadow-blue-300 hover:shadow-lg text-white rounded-md px-7 py-2 mb-3 ">
-              Sign Up
+            <button
+              disabled={loader ? true : false}
+              className=" bg-slate-800 w-full hover:shadow-blue-300 hover:shadow-lg text-white rounded-md px-7 py-2 mb-3 "
+            >
+              {loader ? (
+                <PropagateLoader className="h-4" color="#fff" />
+              ) : (
+                "Sign In"
+              )}
             </button>
           </form>
           <div className=" text-center ">Or</div>

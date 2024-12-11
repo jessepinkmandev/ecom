@@ -22,11 +22,6 @@ const SellerDashboard = lazy(
 
 export const sellerRoutes = [
   {
-    path: "/",
-    element: <SellerHome />,
-    ability: ["admin", "seller"],
-  },
-  {
     path: "/seller/dashboard",
     element: <SellerDashboard />,
     role: "seller",
