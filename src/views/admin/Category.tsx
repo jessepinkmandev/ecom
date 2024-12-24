@@ -1,12 +1,17 @@
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { FaEdit, FaImage, FaTrash } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Pagination from "../Pagination";
 import { IoMdCloseCircle } from "react-icons/io";
 import Search from "../components/Search";
 import { PropagateLoader } from "react-spinners";
 import { useDispatch, useSelector } from "react-redux";
-import { categoryAdd } from "../../store/Reducers/categoryReducer";
+import {
+  categoryAdd,
+  messageClear,
+  getCategory,
+} from "../../store/Reducers/categoryReducer";
+import toast from "react-hot-toast";
 
 const Category = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -18,8 +23,13 @@ const Category = () => {
     name: "",
     image: "",
   });
-  const loader = useSelector((state) => state.category);
+
+  const { loader, successMessage, errorMessage, categorys } = useSelector(
+    (state) => state.category
+  );
+
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const imageHandle = (e) => {
     let files = e.target.files;
@@ -37,6 +47,35 @@ const Category = () => {
     dispatch(categoryAdd(categoryData));
   };
 
+  // hot toasts buy now
+  useEffect(() => {
+    if (errorMessage) {
+      toast.error(errorMessage);
+      dispatch(messageClear());
+    }
+    if (successMessage) {
+      toast.success(successMessage);
+      dispatch(messageClear());
+      setCategoryData({
+        name: "",
+        image: "",
+      });
+      setImageShow("");
+    }
+  }, [successMessage, errorMessage]);
+
+  // something important
+  useEffect(() => {
+    const obj = {
+      perPage: parseInt(perPage),
+      currentPage: parseInt(currentPage),
+      search,
+    };
+    dispatch(getCategory(obj));
+  }, [search, currentPage, perPage]);
+
+  console.log(perPage, search);
+
   return (
     <div className="px-2 lg:px-7 pt-5">
       <div className="flex lg:hidden justify-between items-center mb-5 p-4 bg-slate-400 rounded-md">
@@ -52,7 +91,11 @@ const Category = () => {
       <div className="flex flex-wrap w-full">
         <div className="w-full lg:w-7/12">
           <div className="w-full p-4 bg-slate-400 rounded-md">
-            <Search setPerPage={setPerPage} />
+            <Search
+              setSearch={setSearch}
+              search={search}
+              setPerPage={setPerPage}
+            />
 
             <div className="relative overflow-x-auto mt-5 ">
               <table className="w-full text-sm text-left text-white">
@@ -74,29 +117,26 @@ const Category = () => {
                 </thead>
 
                 <tbody>
-                  {[1, 2, 3, 4, 5].map((d, i) => {
+                  {categorys.map((d, i) => {
                     return (
                       <tr key={i}>
                         <td
                           scope="row"
                           className="py-1 px-6 font-medium whitespace-nowrap"
                         >
-                          {d}
+                          {i + 1}
                         </td>
                         <td
                           scope="row"
                           className="py-1 px-6 font-medium whitespace-nowrap"
                         >
-                          <img
-                            className="w-[45px] h-[45px]"
-                            src="https://picsum.photos/200/300/?blur"
-                          />
+                          <img className="w-[45px] h-[45px]" src={d.image} />
                         </td>
                         <td
                           scope="row"
                           className="py-1 px-6 font-medium whitespace-nowrap"
                         >
-                          Random
+                          {d.name}
                         </td>
                         <td
                           scope="row"

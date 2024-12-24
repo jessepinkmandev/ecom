@@ -1,31 +1,25 @@
 import { useEffect, useState } from "react";
-import { FaImage } from "react-icons/fa";
-import { IoMdCloseCircle } from "react-icons/io";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
+
+import { useDispatch, useSelector } from "react-redux";
+import { getCategory } from "../../store/Reducers//categoryReducer";
+import {
+  get_productone,
+  messageClear,
+  product_image_update,
+  update_product,
+} from "../../store/Reducers/productReducer";
+import { PropagateLoader } from "react-spinners";
+import toast from "react-hot-toast";
 
 const EditProduct = () => {
-  const categories = [
-    {
-      id: 1,
-      name: "Laptop",
-    },
-    {
-      id: 2,
-      name: "Mobile",
-    },
-    {
-      id: 3,
-      name: "Watch",
-    },
-    {
-      id: 4,
-      name: "Earphone",
-    },
-    {
-      id: 5,
-      name: "Headphone",
-    },
-  ];
+  const dispatch = useDispatch();
+  const { categorys } = useSelector((state) => state.category);
+  const { product, loader, successMessage, errorMessage } = useSelector(
+    (state) => state.product
+  );
+  const { productId } = useParams();
+
   const [productDetails, setProductDetails] = useState({
     name: "",
     description: "",
@@ -35,9 +29,34 @@ const EditProduct = () => {
     stock: {},
   });
 
+  useEffect(() => {
+    dispatch(
+      getCategory({
+        search: "",
+        page: "",
+        perPage: "",
+      })
+    );
+  }, []);
+
+  useEffect(() => {
+    dispatch(get_productone(productId));
+  }, [productId]);
+
+  useEffect(() => {
+    if (errorMessage) {
+      toast.error(errorMessage);
+      dispatch(messageClear());
+    }
+    if (successMessage) {
+      toast.success(successMessage);
+      dispatch(messageClear());
+    }
+  }, [successMessage, errorMessage]);
+
   const [cateshow, setCateShow] = useState(false);
   const [category, setCategory] = useState("");
-  const [allCategory, setAllCategory] = useState(categories);
+  const [allCategory, setAllCategory] = useState([]);
   const [searchValue, setSearchValue] = useState("");
   const [images, setImages] = useState([]);
   const [imagesShow, setImagesShow] = useState([{}]);
@@ -65,38 +84,76 @@ const EditProduct = () => {
 
   const changeImage = (img, files) => {
     if (files.length > 0) {
-      //
+      dispatch(
+        product_image_update({
+          oldImage: img,
+          newImage: files[0],
+          productId,
+        })
+      );
     }
   };
 
   useEffect(() => {
-    setProductDetails({
-      name: "Phone Not",
-      description: "Not a phone but a phone",
-      discount: 20,
-      price: 45,
-      brand: "J Mart",
-      stock: 5,
-    });
-    setCategory("Mobile");
-    setImagesShow([
-      { url: "https://picsum.photos/200/300/?blur" },
-      { url: "https://picsum.photos/200/300/?blur" },
-    ]);
-  }, []);
+    const {
+      name,
+      description,
+      discount,
+      price,
+      brand,
+      stock,
+      category,
+      images,
+    } = product;
 
+    setProductDetails({
+      name,
+      description,
+      discount,
+      price,
+      brand,
+      stock,
+    });
+    setCategory(category);
+    setImagesShow(images);
+  }, [product]);
+
+  useEffect(() => {
+    if (categorys.length > 0) {
+      setAllCategory(categorys);
+    }
+  }, [categorys]);
+
+  const update = (e) => {
+    e.preventDefault();
+    const obj = {
+      name: productDetails.name,
+      description: productDetails.description,
+      discount: productDetails.discount,
+      price: productDetails.price,
+      brand: productDetails.brand,
+      stock: productDetails.stock,
+      productId: productId,
+      category: category,
+    };
+
+    dispatch(update_product(obj));
+  };
   return (
     <div className="px=2 lg:px-7 pt-5 text-white">
       <div className="w-full p-4 bg-slate-400 rounded-md">
         <div className="flex justify-between items-center pb-4">
           <h1 className="text-xl font-semibold">Edit Product</h1>
-          <Link className=" bg-blue-500 hover:shadow-blue-500/50 hover:shadow-lg rounded-sm px-7 py-2 my-2">
-            Save
+          <Link
+            to={"/seller/dashboard/all-product"}
+            className=" bg-blue-500 hover:shadow-blue-500/50 hover:shadow-lg rounded-sm px-7 py-2 my-2"
+          >
+            All Product
           </Link>
         </div>
 
         <div>
-          <form>
+          <form onSubmit={update}>
             <div className="flex flex-col mb-3 md:flex-row gap-4 w-full ">
               <div className="flex flex-col w-full gap-1">
                 <label htmlFor="name">Product Name</label>
@@ -155,21 +212,22 @@ const EditProduct = () => {
                   </div>
                   <div className="pt-14"></div>
                   <div className="flex justify-start items-start flex-col h-[200px] overflow-x-hidden">
-                    {allCategory.map((c, i) => (
-                      <span
-                        className={`px-4 py-2 hover:bg-indigo-500 hover:text-white hover:shadow-lg w-full cursor-pointer ${
-                          category === c.name && "bg-indigo-500"
-                        }`}
-                        onClick={() => {
-                          setCateShow(false);
-                          setCategory(c.name);
-                          setSearchValue("");
-                          setAllCategory(categories);
-                        }}
-                      >
-                        {c.name}{" "}
-                      </span>
-                    ))}
+                    {allCategory.length > 0 &&
+                      allCategory.map((c, i) => (
+                        <span
+                          className={`px-4 py-2 hover:bg-indigo-500 hover:text-white hover:shadow-lg w-full cursor-pointer ${
+                            category === c.name && "bg-indigo-500"
+                          }`}
+                          onClick={() => {
+                            setCateShow(false);
+                            setCategory(c.name);
+                            setSearchValue("");
+                            setAllCategory(categories);
+                          }}
+                        >
+                          {c.name}{" "}
+                        </span>
+                      ))}
                   </div>
                 </div>
               </div>
@@ -230,23 +288,32 @@ const EditProduct = () => {
             </div>
 
             <div className="grid lg:grid-cols-4 grid-cols-1 md:grid-cols-3 sm:grid-cols-2 sm:gap-4 gap-3 w-full mb-4   ">
-              {imagesShow.map((img, i) => (
-                <div className="">
-                  <label htmlFor={i}>
-                    <img src={img} alt="" />
-                  </label>
-                  <input
-                    type="file"
-                    id={i}
-                    onChange={(e) => changeImage(img, e.target.files)}
-                    className="hidden"
-                  />
-                </div>
-              ))}
+              {imagesShow &&
+                imagesShow.length > 0 &&
+                imagesShow.map((img, i) => (
+                  <div className="">
+                    <label htmlFor={i}>
+                      <img src={img} alt="" />
+                    </label>
+                    <input
+                      type="file"
+                      id={i}
+                      onChange={(e) => changeImage(img, e.target.files)}
+                      className="hidden"
+                    />
+                  </div>
+                ))}
             </div>
             <div className="flex">
-              <button className="bg-red-500  hover:shadow-red-500/40 hover:shadow-md text-white rounded-md py-2 px-4 my-2">
-                Add Product
+              <button
+                disabled={loader ? true : false}
+                className=" bg-red-500 w-[300px] hover:shadow-lg hover:shadow-red-300/50 text-white rounded-md mt-4 px-7 py-2 mb-3 "
+              >
+                {loader ? (
+                  <PropagateLoader className="h-4" color="#fff" />
+                ) : (
+                  "Add Changes "
+                )}
               </button>
             </div>
           </form>

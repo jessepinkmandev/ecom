@@ -1,6 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import api from "../../api/api";
-import { jwtDecode } from "jwt-decode";
 
 export const categoryAdd = createAsyncThunk(
   "category/categoryAdd",
@@ -13,7 +12,30 @@ export const categoryAdd = createAsyncThunk(
         withCredentials: true,
       });
 
-      console.log(data);
+      //   console.log(data);
+      return fulfillWithValue(data);
+    } catch (error) {
+      // console.log(error.response.data);
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
+export const getCategory = createAsyncThunk(
+  "category/getcategory",
+  async (
+    { perPage, currentPage, search },
+    { rejectWithValue, fulfillWithValue }
+  ) => {
+    try {
+      const { data } = await api.get(
+        `/category-get?page=${currentPage}&&search=${search}&&perPage=${perPage}`,
+        {
+          withCredentials: true,
+        }
+      );
+
+      //   console.log(data);
       return fulfillWithValue(data);
     } catch (error) {
       // console.log(error.response.data);
@@ -29,6 +51,7 @@ export const categoryReducer = createSlice({
     errorMessage: "",
     loader: false,
     categorys: [],
+    totalCategory: 0,
   },
   reducers: {
     messageClear: (state, _) => {
@@ -48,6 +71,10 @@ export const categoryReducer = createSlice({
         state.loader = false;
         state.successMessage = payload.message;
         state.categorys = [...state.categorys, payload.category];
+      })
+      .addCase(getCategory.fulfilled, (state, { payload }) => {
+        state.totalCategory = payload.totalCategory;
+        state.categorys = payload.categorys;
       });
   },
 });

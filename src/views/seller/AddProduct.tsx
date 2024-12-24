@@ -1,31 +1,52 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaImage } from "react-icons/fa";
 import { IoMdCloseCircle } from "react-icons/io";
 import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { getCategory } from "../../store/Reducers//categoryReducer";
+import { add_product, messageClear } from "../../store/Reducers/productReducer";
+import { PropagateLoader } from "react-spinners";
+import toast from "react-hot-toast";
 
 const AddProduct = () => {
-  const categories = [
-    {
-      id: 1,
-      name: "Laptop",
-    },
-    {
-      id: 2,
-      name: "Mobile",
-    },
-    {
-      id: 3,
-      name: "Watch",
-    },
-    {
-      id: 4,
-      name: "Earphone",
-    },
-    {
-      id: 5,
-      name: "Headphone",
-    },
-  ];
+  const dispatch = useDispatch();
+  const { categorys } = useSelector((state) => state.category);
+  const { loader, successMessage, errorMessage } = useSelector(
+    (state) => state.product
+  );
+
+  useEffect(() => {
+    if (errorMessage) {
+      toast.error(errorMessage);
+      dispatch(messageClear());
+    }
+    if (successMessage) {
+      toast.success(successMessage);
+      dispatch(messageClear());
+      setProductDetails({
+        name: "",
+        description: "",
+        discount: "",
+        price: "",
+        brand: "",
+        stock: "",
+      });
+      setImagesShow([]);
+      setImages([]);
+      setCategory("");
+    }
+  }, [successMessage, errorMessage]);
+
+  useEffect(() => {
+    dispatch(
+      getCategory({
+        search: "",
+        page: "",
+        perPage: "",
+      })
+    );
+  }, []);
+
   const [productDetails, setProductDetails] = useState({
     name: "",
     description: "",
@@ -37,12 +58,10 @@ const AddProduct = () => {
 
   const [cateshow, setCateShow] = useState(false);
   const [category, setCategory] = useState("");
-  const [allCategory, setAllCategory] = useState(categories);
+  const [allCategory, setAllCategory] = useState([]);
   const [searchValue, setSearchValue] = useState("");
   const [images, setImages] = useState([]);
   const [imagesShow, setImagesShow] = useState([]);
-
-  console.log(productDetails);
 
   const handleImage = (e) => {
     const files = e.target.files;
@@ -56,8 +75,8 @@ const AddProduct = () => {
       setImagesShow([...imagesShow, ...imageUrl]);
     }
   };
-  console.log(images);
-  console.log(imagesShow);
+  // console.log(images);
+  // console.log(imagesShow);
 
   const categorySearch = (e) => {
     const value = e.target.value;
@@ -69,7 +88,7 @@ const AddProduct = () => {
       );
       setAllCategory(srcValue);
     } else {
-      setAllCategory(categories);
+      setAllCategory(categorys);
     }
   };
 
@@ -101,6 +120,30 @@ const AddProduct = () => {
     setImagesShow(filterImageUrl);
   };
 
+  const add = (e) => {
+    e.preventDefault();
+
+    const formData = new FormData();
+    const { name, description, discount, price, brand, stock } = productDetails;
+    formData.append("name", name);
+    formData.append("description", description);
+    formData.append("discount", discount);
+    formData.append("price", price);
+    formData.append("brand", brand);
+    formData.append("stock", stock);
+    formData.append("shopName", "J Mart");
+    formData.append("category", category);
+
+    for (let i = 0; i < images.length; i++) {
+      formData.append("images", images[i]);
+    }
+    dispatch(add_product(formData));
+  };
+
+  useEffect(() => {
+    setAllCategory(categorys);
+  }, [categorys]);
+
   return (
     <div className="px=2 lg:px-7 pt-5 text-white">
       <div className="w-full p-4 bg-slate-400 rounded-md">
@@ -112,7 +155,7 @@ const AddProduct = () => {
         </div>
 
         <div>
-          <form>
+          <form onSubmit={add}>
             <div className="flex flex-col mb-3 md:flex-row gap-4 w-full ">
               <div className="flex flex-col w-full gap-1">
                 <label htmlFor="name">Product Name</label>
@@ -180,7 +223,7 @@ const AddProduct = () => {
                           setCateShow(false);
                           setCategory(c.name);
                           setSearchValue("");
-                          setAllCategory(categories);
+                          setAllCategory(categorys);
                         }}
                       >
                         {c.name}{" "}
@@ -287,8 +330,15 @@ const AddProduct = () => {
               />
             </div>
             <div className="flex">
-              <button className="bg-red-500  hover:shadow-red-500/40 hover:shadow-md text-white rounded-md py-2 px-4 my-2">
-                Add Product
+              <button
+                disabled={loader ? true : false}
+                className=" bg-red-500 w-[300px] hover:shadow-lg hover:shadow-red-300/50 text-white rounded-md mt-4 px-7 py-2 mb-3 "
+              >
+                {loader ? (
+                  <PropagateLoader className="h-4" color="#fff" />
+                ) : (
+                  "Add Product "
+                )}
               </button>
             </div>
           </form>

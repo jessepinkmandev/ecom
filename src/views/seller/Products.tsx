@@ -1,13 +1,30 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Search from "../components/Search";
 import Pagination from "../Pagination";
 import { FaEdit, FaEye, FaTrash } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { get_product } from "../../store/Reducers/productReducer";
 
 const Products = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [search, setSearch] = useState("");
   const [perPage, setPerPage] = useState(5);
+
+  /////////////
+  const { products, totalProduct } = useSelector((state) => state.product);
+
+  const dispatch = useDispatch();
+
+  //////////////
+  useEffect(() => {
+    const obj = {
+      perPage: parseInt(perPage),
+      currentPage: parseInt(currentPage),
+      search,
+    };
+    dispatch(get_product(obj));
+  }, [search, currentPage, perPage]);
 
   return (
     <div className="px-2 lg:px-7 pt-5">
@@ -48,53 +65,50 @@ const Products = () => {
           </thead>
 
           <tbody>
-            {[1, 2, 3, 4, 5].map((d, i) => {
+            {products.map((d, i) => {
               return (
                 <tr key={i}>
                   <td
                     scope="row"
                     className="py-1 px-6 font-medium whitespace-nowrap"
                   >
-                    {d}
+                    {i + 1}
                   </td>
                   <td
                     scope="row"
                     className="py-1 px-6 font-medium whitespace-nowrap"
                   >
-                    <img
-                      className="w-[45px] h-[45px]"
-                      src="https://picsum.photos/200/300/?blur"
-                    />
+                    <img className="w-[45px] h-[45px]" src={d.images[0]} />
                   </td>
                   <td
                     scope="row"
                     className="py-1 px-6 font-medium whitespace-nowrap"
                   >
-                    Random
+                    {d?.name?.slice(0, 15)}
                   </td>
                   <td
                     scope="row"
                     className="py-1 px-6 font-medium whitespace-nowrap"
                   >
-                    Computer
+                    {d.category}
                   </td>
                   <td
                     scope="row"
                     className="py-1 px-6 font-medium whitespace-nowrap"
                   >
-                    $132
+                    ${d.price}
                   </td>
                   <td
                     scope="row"
                     className="py-1 px-6 font-medium whitespace-nowrap"
                   >
-                    10%
+                    {d.discount === 0 ? "No discount" : `${d.discount}%`}
                   </td>
                   <td
                     scope="row"
                     className="py-1 px-6 font-medium whitespace-nowrap"
                   >
-                    85
+                    {d.stock}
                   </td>
 
                   <td
@@ -103,7 +117,7 @@ const Products = () => {
                   >
                     <div className="flex justify-start items-center gap-4">
                       <Link
-                        to={`/seller/dashboard/edit-product/4`}
+                        to={`/seller/dashboard/edit-product/${d._id}`}
                         className="p-1.5 bg-yellow-500 rounded hover:shadow-lg hover:shadow-yellow-500/50 "
                       >
                         <FaEdit />
@@ -123,15 +137,19 @@ const Products = () => {
         </table>
       </div>
 
-      <div className="w-full justify-end flex mt-4 bottom-4 right-4">
-        <Pagination
-          pageNumber={currentPage}
-          setPageNumber={setCurrentPage}
-          totalItem={50}
-          perPage={perPage}
-          showItem={3}
-        />
-      </div>
+      {totalProduct <= perPage ? (
+        ""
+      ) : (
+        <div className="w-full justify-end flex mt-4 bottom-4 right-4">
+          <Pagination
+            pageNumber={currentPage}
+            setPageNumber={setCurrentPage}
+            totalItem={50}
+            perPage={perPage}
+            showItem={3}
+          />
+        </div>
+      )}
     </div>
   );
 };
