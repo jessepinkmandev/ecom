@@ -1,27 +1,69 @@
 import { FaEdit, FaImage } from "react-icons/fa";
-import { FadeLoader } from "react-spinners";
+import { useDispatch, useSelector } from "react-redux";
+import { FadeLoader, PropagateLoader } from "react-spinners";
+import {
+  messageClear,
+  profile_image_upload,
+  profile_info_add,
+} from "../../store/Reducers/authReducer";
+import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 const Profile = () => {
+  const [profileDetails, setProfileDetails] = useState({
+    division: "",
+    district: "",
+    shopName: "",
+    subdistrict: "",
+  });
+
+  const { userInfo, loader, successMessage } = useSelector(
+    (state) => state.auth
+  );
+
+  const dispatch = useDispatch();
   const style = { input: `flex flex-col w-full gap-1 mb-2` };
-  const Image = true;
-  const loader = !true;
   const status = "active";
-  const userInfo = true;
+
+  useEffect(() => {
+    if (successMessage) {
+      toast.success(successMessage);
+      messageClear();
+    }
+  }, [successMessage]);
+
+  const add_image_seller = (e) => {
+    if (e.target.files.length > 0) {
+      const formData = new FormData();
+      formData.append("image", e.target.files[0]);
+      dispatch(profile_image_upload(formData));
+    }
+  };
+  // import this later
+
+  const inputHandle = (e) => {
+    setProfileDetails({
+      ...profileDetails,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const add = (e) => {
+    e.preventDefault();
+    dispatch(profile_info_add(profileDetails));
+  };
   return (
     <div className="px-2 lg:px-7 py-5 text-white">
       <div className="w-full flex flex-wrap ">
         <div className="w-full md:w-6/12">
           <div className="w-full p-4 bg-slate-500 rounded-md ">
             <div className="flex justify-center items-center py-3">
-              {Image ? (
+              {userInfo?.image ? (
                 <label
                   className="h-40 w-52 relative p-3 cursor-pointer overflow-hidden "
                   htmlFor="img"
                 >
-                  <img
-                    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS4gg_D8uFRFRFiSilx1eTouqbrEpxHPKpOgg&s"
-                    alt=""
-                  />
+                  <img src={userInfo.image} alt="" />
                   {loader && (
                     <div className="bg-slate-600 absolute left-0 top-0 w-full h-full opacity-70 flex justify-center items-center z-20">
                       <span>
@@ -48,7 +90,12 @@ const Profile = () => {
                   )}
                 </label>
               )}
-              <input type="file" className="hidden" id="img" />
+              <input
+                onChange={add_image_seller}
+                type="file"
+                className="hidden"
+                id="img"
+              />
             </div>
 
             <div className="px-0 md:px-5 py-2">
@@ -57,26 +104,26 @@ const Profile = () => {
                   <FaEdit />
                 </span>
                 <div className="flex gap-2 ">
-                  <span className="">Name: Walter White</span>
+                  <span className="">{`Name: ${userInfo.name}`}</span>
                 </div>
                 <div className="flex gap-2 ">
-                  <span className="">Email: test@test.com</span>
+                  <span className="">{`Email: ${userInfo.email} `}</span>
                 </div>
                 <div className="flex gap-2 ">
-                  <span className="">Role: Seller </span>
+                  <span className="">{`Role: ${userInfo.role}`} </span>
                 </div>
                 <div className="flex gap-2 ">
-                  <span className="">Status: Active </span>
+                  <span className="">{`Status: ${userInfo.name}`} </span>
                 </div>
                 <div className="flex gap-2 ">
                   <span className="">Payment Account: </span>
                   <p>
                     {status === "active" ? (
-                      <span className="bg-green-500 text-white text-xs cursor-pointer font-normal ml-2 px-2 py-0.5 rounded">
-                        Pending
+                      <span className="bg-red-500 text-white text-xs cursor-pointer font-normal ml-2 px-2 py-0.5 rounded">
+                        {userInfo.payment}
                       </span>
                     ) : (
-                      <span className="bg-blue-500 text-white text-xs cursor-pointer font-normal ml-2 px-2 py-0.5 rounded">
+                      <span className="bg-blue-500 text-white text-xs cursor-pointer font-nor mal ml-2 px-2 py-0.5 rounded">
                         Click Active
                       </span>
                     )}
@@ -86,15 +133,17 @@ const Profile = () => {
             </div>
 
             <div className="px-0 md:px-5 py-2">
-              {!userInfo ? (
-                <form>
+              {!userInfo?.shopInfo ? (
+                <form onSubmit={add}>
                   <div className={style.input}>
-                    <label htmlFor="shop">Shop Name</label>
+                    <label htmlFor="shopName">Shop Name</label>
                     <input
+                      value={profileDetails.shopName}
+                      onChange={inputHandle}
                       className="bg-slate-500 px-4 py-2 focus:border-indigo-200 outline-none border border-slate-700 rounded-md "
                       type="text"
-                      name="shop"
-                      id="shop"
+                      name="shopName"
+                      id="shopName"
                       placeholder="Shop name..."
                     />
                   </div>
@@ -102,6 +151,8 @@ const Profile = () => {
                   <div className={style.input}>
                     <label htmlFor="division">Division Name</label>
                     <input
+                      value={profileDetails.division}
+                      onChange={inputHandle}
                       className="bg-slate-500 px-4 py-2 focus:border-indigo-200 outline-none border border-slate-700 rounded-md "
                       type="text"
                       name="division"
@@ -113,6 +164,8 @@ const Profile = () => {
                   <div className={style.input}>
                     <label htmlFor="district">District Name</label>
                     <input
+                      value={profileDetails.district}
+                      onChange={inputHandle}
                       className="bg-slate-500 px-4 py-2 focus:border-indigo-200 outline-none border border-slate-700 rounded-md "
                       type="text"
                       name="district"
@@ -124,6 +177,8 @@ const Profile = () => {
                   <div className={style.input}>
                     <label htmlFor="subdistrict">Subdistrict Name</label>
                     <input
+                      value={profileDetails.subdistrict}
+                      onChange={inputHandle}
                       className="bg-slate-500 px-4 py-2 focus:border-indigo-200 outline-none border border-slate-700 rounded-md "
                       type="text"
                       name="subdistrict"
@@ -131,8 +186,15 @@ const Profile = () => {
                       placeholder="Subdistrict name..."
                     />
                   </div>
-                  <button className="bg-red-500  hover:shadow-red-500/40 hover:shadow-md text-white rounded-md py-2 px-4 my-2">
-                    Add Changes
+                  <button
+                    disabled={loader ? true : false}
+                    className=" bg-red-500 w-[300px] hover:shadow-lg hover:shadow-red-300/50 text-white rounded-md mt-4 px-7 py-2 mb-3 "
+                  >
+                    {loader ? (
+                      <PropagateLoader className="h-4" color="#fff" />
+                    ) : (
+                      "Add Changes "
+                    )}
                   </button>
                 </form>
               ) : (
@@ -141,16 +203,25 @@ const Profile = () => {
                     <FaEdit />
                   </span>
                   <div className="flex gap-2 ">
-                    <span className="">Shop Name: J Mart</span>
+                    <span className="">
+                      Shop Name: <span>{userInfo.shopInfo?.shopName}</span>
+                    </span>
                   </div>
                   <div className="flex gap-2 ">
-                    <span className="">Division: North</span>
+                    <span className="">
+                      Division: <span>{userInfo.shopInfo?.division}</span>
+                    </span>
                   </div>
                   <div className="flex gap-2 ">
-                    <span className="">District: 44 </span>
+                    <span className="">
+                      District: <span>{userInfo.shopInfo?.district}</span>
+                    </span>
                   </div>
                   <div className="flex gap-2 ">
-                    <span className="">Sub District: Houma </span>
+                    <span className="">
+                      Sub District:{" "}
+                      <span>{userInfo.shopInfo?.subdistrict}</span>
+                    </span>
                   </div>
                 </div>
               )}

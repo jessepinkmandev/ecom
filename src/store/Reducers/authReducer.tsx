@@ -40,6 +40,23 @@ export const seller_login = createAsyncThunk(
   }
 );
 
+export const profile_info_add = createAsyncThunk(
+  "auth/profile_info_add",
+  async (info, { rejectWithValue, fulfillWithValue }) => {
+    try {
+      const { data } = await api.post("/profile-info-add", info, {
+        withCredentials: true,
+      });
+
+      // console.log(data);
+      return fulfillWithValue(data);
+    } catch (error) {
+      // console.log(error.response.data);
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
 export const get_user_info = createAsyncThunk(
   "auth/get_user_info",
   async (_, { rejectWithValue, fulfillWithValue }) => {
@@ -52,6 +69,23 @@ export const get_user_info = createAsyncThunk(
       return fulfillWithValue(data);
     } catch (error) {
       // console.log(error.response.data);
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
+export const profile_image_upload = createAsyncThunk(
+  "auth/profile_image_upload",
+  async (image, { rejectWithValue, fulfillWithValue }) => {
+    try {
+      const { data } = await api.post("/profile-image-upload", image, {
+        withCredentials: true,
+      });
+
+      console.log(data);
+      return fulfillWithValue(data);
+    } catch (error) {
+      console.log(error.response.data);
       return rejectWithValue(error.response.data);
     }
   }
@@ -76,6 +110,7 @@ export const seller_register = createAsyncThunk(
     }
   }
 );
+
 const returnRole = (token) => {
   if (token) {
     const decodeToken = jwtDecode(token);
@@ -149,6 +184,22 @@ export const authReducer = createSlice({
       .addCase(get_user_info.fulfilled, (state, { payload }) => {
         state.loader = false;
         state.userInfo = payload.userInfo;
+      })
+      .addCase(profile_image_upload.pending, (state, { payload }) => {
+        state.loader = true;
+      })
+      .addCase(profile_image_upload.fulfilled, (state, { payload }) => {
+        state.loader = false;
+        state.userInfo = payload.userInfo;
+        state.successMessage = payload.message;
+      })
+      .addCase(profile_info_add.pending, (state, { payload }) => {
+        state.loader = true;
+      })
+      .addCase(profile_info_add.fulfilled, (state, { payload }) => {
+        state.loader = false;
+        state.userInfo = payload.userInfo;
+        state.successMessage = payload.message;
       });
   },
 });
