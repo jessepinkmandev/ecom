@@ -1,12 +1,29 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaEdit, FaEye, FaTrash } from "react-icons/fa";
 import Pagination from "../Pagination";
+import { useDispatch, useSelector } from "react-redux";
+import { get_deactive_sellers } from "../../store/Reducers/sellerReducer";
+import { Link } from "react-router-dom";
 
 const DeactivateSellers = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [search, setSearch] = useState("");
   const [perPage, setPerPage] = useState(5);
   const [show, setShow] = useState(false);
+
+  const dispatch = useDispatch();
+  const { sellers, totalSeller } = useSelector((state) => state.seller);
+
+  // console.log(sellers, totalSeller);
+
+  useEffect(() => {
+    const obj = {
+      perPage: parseInt(perPage),
+      page: parseInt(currentPage),
+      search,
+    };
+    dispatch(get_deactive_sellers(obj));
+  }, [search, currentPage, perPage]);
 
   return (
     <div className="px-2 lg:px-7 pt-5">
@@ -58,14 +75,14 @@ const DeactivateSellers = () => {
             </thead>
 
             <tbody>
-              {[1, 2, 3, 4, 5].map((d, i) => {
+              {sellers.map((d, i) => {
                 return (
                   <tr key={i}>
                     <td
                       scope="row"
                       className="py-1 px-6 font-medium whitespace-nowrap"
                     >
-                      {d}
+                      {i + 1}
                     </td>
                     <td
                       scope="row"
@@ -80,32 +97,34 @@ const DeactivateSellers = () => {
                       scope="row"
                       className="py-1 px-6 font-medium whitespace-nowrap"
                     >
-                      Random
+                      {d.name}
                     </td>
                     <td
                       scope="row"
                       className="py-1 px-6 font-medium whitespace-nowrap"
                     >
-                      test@test.com
+                      {d.email}
                     </td>
                     <td
                       scope="row"
                       className="py-1 px-6 font-medium whitespace-nowrap"
                     >
-                      Pending{" "}
+                      {d.payment}
                     </td>
                     <td
                       scope="row"
                       className="py-1 px-6 font-medium whitespace-nowrap"
                     >
-                      Active
+                      {d.status}
                     </td>
                     <td
                       scope="row"
                       className="py-1 px-6 font-medium whitespace-nowrap"
                     >
                       <div className="bg-green-500 flex items-center justify-center px-2 py-1 cursor-pointer">
-                        <FaEye />
+                        <Link to={`/admin/dashboard/seller/details/${d._id}`}>
+                          <FaEye />
+                        </Link>
                       </div>
                     </td>
                   </tr>

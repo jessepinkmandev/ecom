@@ -1,12 +1,29 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaEdit, FaEye, FaTrash } from "react-icons/fa";
 import Pagination from "../Pagination";
+import { useDispatch, useSelector } from "react-redux";
+import { get_active_sellers } from "../../store/Reducers/sellerReducer";
+import { Link } from "react-router-dom";
 
 const Sellers = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [search, setSearch] = useState("");
   const [perPage, setPerPage] = useState(5);
   const [show, setShow] = useState(false);
+
+  const dispatch = useDispatch();
+  const { sellers, totalSeller } = useSelector((state) => state.seller);
+
+  // console.log(sellers, totalSeller);
+
+  useEffect(() => {
+    const obj = {
+      perPage: parseInt(perPage),
+      page: parseInt(currentPage),
+      search,
+    };
+    dispatch(get_active_sellers(obj));
+  }, [search, currentPage, perPage]);
 
   return (
     <div className="px-2 lg:px-7 pt-5">
@@ -23,6 +40,8 @@ const Sellers = () => {
             <option value="20">20</option>
           </select>
           <input
+            onChange={(e) => setSearch(e.target.value)}
+            value={search}
             className="px-4 py-2 focus:border-indigo-500 outline-none bg-slate-500 border border-slate-700 rounded-md text-white"
             type="text"
             placeholder="Search..."
@@ -63,14 +82,14 @@ const Sellers = () => {
             </thead>
 
             <tbody>
-              {[1, 2, 3, 4, 5].map((d, i) => {
+              {sellers.map((d, i) => {
                 return (
                   <tr key={i}>
                     <td
                       scope="row"
                       className="py-1 px-6 font-medium whitespace-nowrap"
                     >
-                      {d}
+                      {i + 1}
                     </td>
                     <td
                       scope="row"
@@ -85,44 +104,46 @@ const Sellers = () => {
                       scope="row"
                       className="py-1 px-6 font-medium whitespace-nowrap"
                     >
-                      Random
+                      {d.name}
                     </td>
                     <td
                       scope="row"
                       className="py-1 px-6 font-medium whitespace-nowrap"
                     >
-                      Jesse
+                      {d.shopInfo.shopName}
                     </td>
                     <td
                       scope="row"
                       className="py-1 px-6 font-medium whitespace-nowrap"
                     >
-                      Pending{" "}
+                      {d.payment}
                     </td>
                     <td
                       scope="row"
                       className="py-1 px-6 font-medium whitespace-nowrap"
                     >
-                      test@test.com
+                      {d.email}
                     </td>
                     <td
                       scope="row"
                       className="py-1 px-6 font-medium whitespace-nowrap"
                     >
-                      North
+                      {d.shopInfo.division}
                     </td>
                     <td
                       scope="row"
                       className="py-1 px-6 font-medium whitespace-nowrap"
                     >
-                      District 44{" "}
+                      {d.shopInfo.district}
                     </td>
                     <td
                       scope="row"
                       className="py-1 px-6  font-medium whitespace-nowrap"
                     >
                       <div className="bg-green-500 flex items-center justify-center px-2 py-1 cursor-pointer">
-                        <FaEye />
+                        <Link to={`/admin/dashboard/seller/details/${d._id}`}>
+                          <FaEye />
+                        </Link>
                       </div>
                     </td>
                   </tr>
@@ -131,15 +152,19 @@ const Sellers = () => {
             </tbody>
           </table>
         </div>
-        <div className="w-full justify-end flex mt-4 bottom-4 right-4">
-          <Pagination
-            pageNumber={currentPage}
-            setPageNumber={setCurrentPage}
-            totalItem={50}
-            perPage={perPage}
-            showItem={3}
-          />
-        </div>
+        {totalSeller <= perPage ? (
+          <div className="w-full justify-end flex mt-4 bottom-4 right-4">
+            <Pagination
+              pageNumber={currentPage}
+              setPageNumber={setCurrentPage}
+              totalItem={totalSeller}
+              perPage={perPage}
+              showItem={3}
+            />
+          </div>
+        ) : (
+          ""
+        )}
       </div>
     </div>
   );
